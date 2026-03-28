@@ -1157,13 +1157,17 @@
     btn.disabled = false;
     btn.textContent = '+ Agregar';
 
-    if (error) { toast('No se pudo agregar'); return; }
+    if (error) {
+      console.error('Supabase error (places):', error);
+      toast('Error: ' + (error.message || 'no se pudo agregar'));
+      return;
+    }
     if (data && !st.places.find(p => p.id === data.id)) {
       st.places.unshift(data);
-      renderPlaces();
     }
     nameEl.value = '';
     descEl.value = '';
+    renderPlaces();
     toast('¡Lugar agregado!');
   }
 
