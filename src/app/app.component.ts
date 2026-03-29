@@ -5,7 +5,7 @@ import { filter, map, startWith } from 'rxjs';
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
 
-const AUTH_PATHS = ['/login', '/register', '/pending'];
+const AUTH_PATHS = ['/login', '/register', '/pending', '/forgot-password', '/reset-password'];
 
 @Component({
   selector: 'app-root',
