@@ -5,7 +5,9 @@
       "Bash(node_modules/.bin/ng build:*)",
       "Bash(npx ng:*)",
       "Bash(npm run:*)",
-      "Bash(npx surge:*)"
+      "Bash(npx surge:*)",
+      "Bash(rm index.html 200.html)",
+      "Bash(rm -rf dist/)"
     ]
   }
 }

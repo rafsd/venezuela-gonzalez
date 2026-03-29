@@ -1,1 +1,15 @@
-node_modules
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Angular cache
+.angular/
+
+# Claude Code project files
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
