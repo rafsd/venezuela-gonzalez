@@ -22,6 +22,7 @@ export interface Place {
   description: string | null;
   category: string;
   added_by: string;
+  shared_with: string[];
   created_at: string;
 }
 
@@ -68,6 +69,7 @@ export class SupabaseService {
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'places' }, ({ eventType, new: n, old: o }: any) => {
         if (eventType === 'INSERT') this._places.update(l => l.find(p => p.id === n.id) ? l : [n, ...l]);
+        if (eventType === 'UPDATE') this._places.update(l => l.map(p => p.id === n.id ? n : p));
         if (eventType === 'DELETE') this._places.update(l => l.filter(p => p.id !== o.id));
       })
       .subscribe();
@@ -105,14 +107,25 @@ export class SupabaseService {
     return { error };
   }
 
-  async addPlace(name: string, description: string | null, category: string, addedBy: string) {
+  async addPlace(name: string, description: string | null, category: string, addedBy: string, sharedWith: string[] = []) {
     const { data, error } = await this.client
       .from('places')
-      .insert({ name, description, category, added_by: addedBy })
+      .insert({ name, description, category, added_by: addedBy, shared_with: sharedWith })
       .select()
       .single();
     if (!error && data) this._places.update(l => l.find(p => p.id === data.id) ? l : [data, ...l]);
     return { data, error };
+  }
+
+  async updatePlace(id: string, updates: Partial<Pick<Place, 'name' | 'description' | 'category' | 'shared_with'>>) {
+    const { data, error } = await this.client
+      .from('places')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+    if (!error && data) this._places.update(l => l.map(p => p.id === id ? data as Place : p));
+    return { error };
   }
 
   async deletePlace(id: string) {
