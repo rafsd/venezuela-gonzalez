@@ -1,0 +1,77 @@
+<div class="page-header">
+  <div class="page-eyebrow">Administración</div>
+  <div class="page-title">Solicitudes de acceso</div>
+  <div class="page-desc">Aprueba o rechaza las solicitudes para unirse al planificador del viaje.</div>
+</div>
+<div class="page-body">
+  @if (loading()) {
+    <div class="loading-msg">Cargando…</div>
+  } @else {
+    @if (pending().length > 0) {
+      <section class="section">
+        <div class="section-title">
+          <span class="badge badge-pending">{{ pending().length }}</span>
+          Pendientes
+        </div>
+        <div class="profiles-list">
+          @for (p of pending(); track p.id) {
+            <div class="profile-row">
+              <div class="profile-avatar">{{ p.display_name[0].toUpperCase() }}</div>
+              <div class="profile-info">
+                <div class="profile-name">{{ p.display_name }}</div>
+                <div class="profile-email">{{ p.email }}</div>
+                <div class="profile-date">Solicitó {{ formatDate(p.created_at) }}</div>
+              </div>
+              <div class="profile-actions">
+                <button class="btn-approve" (click)="approve(p)">Aprobar</button>
+                <button class="btn-reject" (click)="reject(p)">Rechazar</button>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    } @else {
+      <div class="empty-state">No hay solicitudes pendientes ✓</div>
+    }
+
+    @if (members().length > 0) {
+      <section class="section">
+        <div class="section-title">Miembros activos</div>
+        <div class="profiles-list">
+          @for (p of members(); track p.id) {
+            <div class="profile-row">
+              <div class="profile-avatar member">{{ p.display_name[0].toUpperCase() }}</div>
+              <div class="profile-info">
+                <div class="profile-name">{{ p.display_name }}</div>
+                <div class="profile-email">{{ p.email }}</div>
+              </div>
+              <div class="profile-actions">
+                <button class="btn-reject" (click)="reject(p)">Revocar</button>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    @if (rejected().length > 0) {
+      <section class="section">
+        <div class="section-title muted">Rechazados</div>
+        <div class="profiles-list">
+          @for (p of rejected(); track p.id) {
+            <div class="profile-row faded">
+              <div class="profile-avatar rejected">{{ p.display_name[0].toUpperCase() }}</div>
+              <div class="profile-info">
+                <div class="profile-name">{{ p.display_name }}</div>
+                <div class="profile-email">{{ p.email }}</div>
+              </div>
+              <div class="profile-actions">
+                <button class="btn-approve" (click)="approve(p)">Aprobar</button>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  }
+</div>

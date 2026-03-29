@@ -1,0 +1,78 @@
+@if (!submitted()) {
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="auth-icon">✈️</span>
+      <h1 class="auth-title">Unirse al viaje</h1>
+      <p class="auth-sub">Venezuela González · 2025</p>
+    </div>
+
+    <form class="auth-form" (submit)="$event.preventDefault(); submit()">
+      <div class="field-group">
+        <label class="field-label">Tu nombre</label>
+        <input
+          class="field"
+          type="text"
+          [value]="displayName()"
+          (input)="set('displayName', $any($event.target).value)"
+          placeholder="ej. María González"
+          autocomplete="name"
+        />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Correo electrónico</label>
+        <input
+          class="field"
+          type="email"
+          [value]="email()"
+          (input)="set('email', $any($event.target).value)"
+          placeholder="tu@correo.com"
+          autocomplete="email"
+        />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Contraseña</label>
+        <input
+          class="field"
+          type="password"
+          [value]="password()"
+          (input)="set('password', $any($event.target).value)"
+          placeholder="Mínimo 6 caracteres"
+          autocomplete="new-password"
+        />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Confirmar contraseña</label>
+        <input
+          class="field"
+          type="password"
+          [value]="confirmPassword()"
+          (input)="set('confirmPassword', $any($event.target).value)"
+          placeholder="Repite la contraseña"
+          autocomplete="new-password"
+        />
+      </div>
+      <button class="btn-auth" type="submit" [disabled]="loading()">
+        @if (loading()) {
+          <span class="spinner"></span> Enviando solicitud…
+        } @else {
+          Solicitar acceso
+        }
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      ¿Ya tienes acceso?
+      <a routerLink="/login">Inicia sesión</a>
+    </p>
+  </div>
+} @else {
+  <div class="auth-card success-card">
+    <div class="success-icon">📬</div>
+    <h2 class="success-title">Solicitud enviada</h2>
+    <p class="success-msg">
+      Tu solicitud fue recibida. Rafael revisará tu acceso
+      y recibirás confirmación pronto.
+    </p>
+    <a class="btn-back" routerLink="/login">Volver al inicio</a>
+  </div>
+}

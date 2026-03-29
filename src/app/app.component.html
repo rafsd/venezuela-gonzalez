@@ -1,0 +1,7 @@
+@if (!isAuthPage()) {
+  <app-sidebar />
+}
+<main [class.main]="!isAuthPage()" [class.auth-main]="isAuthPage()">
+  <router-outlet />
+</main>
+<app-toast />

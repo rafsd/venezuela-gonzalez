@@ -1,0 +1,45 @@
+<div class="auth-card">
+  <div class="auth-brand">
+    <span class="auth-icon">✈️</span>
+    <h1 class="auth-title">Venezuela González</h1>
+    <p class="auth-sub">Planificador de viaje · 2025</p>
+  </div>
+
+  <form class="auth-form" (submit)="$event.preventDefault(); submit()">
+    <div class="field-group">
+      <label class="field-label">Correo electrónico</label>
+      <input
+        class="field"
+        type="email"
+        [value]="email()"
+        (input)="set('email', $any($event.target).value)"
+        placeholder="tu@correo.com"
+        autocomplete="email"
+      />
+    </div>
+    <div class="field-group">
+      <label class="field-label">Contraseña</label>
+      <input
+        class="field"
+        type="password"
+        [value]="password()"
+        (input)="set('password', $any($event.target).value)"
+        placeholder="••••••••"
+        autocomplete="current-password"
+        (keydown.enter)="submit()"
+      />
+    </div>
+    <button class="btn-auth" type="submit" [disabled]="loading()">
+      @if (loading()) {
+        <span class="spinner"></span> Entrando…
+      } @else {
+        Entrar
+      }
+    </button>
+  </form>
+
+  <p class="auth-footer">
+    ¿Quieres unirte al viaje?
+    <a routerLink="/register">Solicitar acceso</a>
+  </p>
+</div>

@@ -1,5 +1,5 @@
 -- ============================================================
--- PLACES TABLE
+-- PLACES TABLE  (safe to re-run)
 -- Run in: https://supabase.com/dashboard/project/jrvipragbenkvnqihyjt/sql
 -- ============================================================
 
@@ -13,13 +13,18 @@ CREATE TABLE IF NOT EXISTS places (
   created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS places_category_idx    ON places(category);
-CREATE INDEX IF NOT EXISTS places_created_at_idx  ON places(created_at DESC);
+CREATE INDEX IF NOT EXISTS places_category_idx   ON places(category);
+CREATE INDEX IF NOT EXISTS places_created_at_idx ON places(created_at DESC);
 
 ALTER TABLE places ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read places"   ON places;
+DROP POLICY IF EXISTS "Public insert places" ON places;
+DROP POLICY IF EXISTS "Public delete places" ON places;
 
 CREATE POLICY "Public read places"   ON places FOR SELECT USING (true);
 CREATE POLICY "Public insert places" ON places FOR INSERT WITH CHECK (true);
 CREATE POLICY "Public delete places" ON places FOR DELETE USING (true);
 
+-- If this errors "already a member of publication", that's fine — skip it.
 ALTER PUBLICATION supabase_realtime ADD TABLE places;

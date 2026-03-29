@@ -1,0 +1,13 @@
+<div class="auth-card">
+  <div class="pending-icon">⏳</div>
+  <h2 class="pending-title">Solicitud pendiente</h2>
+  <p class="pending-msg">
+    Hola <strong>{{ auth.profile()?.display_name }}</strong>,<br>
+    tu solicitud está esperando aprobación de
+    <strong>Rafael González</strong>.
+  </p>
+  <p class="pending-hint">
+    Una vez aprobado, podrás acceder al planificador del viaje.
+  </p>
+  <button class="btn-logout" (click)="auth.signOut()">Cerrar sesión</button>
+</div>

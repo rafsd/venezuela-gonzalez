@@ -1,0 +1,58 @@
+<div class="modal-overlay" (click)="$event.target === $event.currentTarget && close.emit()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-date">{{ dateLabel() }}</div>
+      <button class="modal-close-btn" (click)="close.emit()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">Disponibilidad</div>
+        <div class="modal-avail-people">
+          @for (a of dayAvailability(); track a.id) {
+            <span class="modal-av-chip" [style.background]="personColor(a.person_name)">
+              <span class="modal-av-dot">{{ personInitials(a.person_name) }}</span>
+              {{ a.person_name }}
+            </span>
+          }
+          @if (dayAvailability().length === 0) {
+            <div class="modal-hint">Nadie marcado como disponible todavía</div>
+          }
+        </div>
+        <button class="modal-avail-btn" [class.is-me]="hasMe()" (click)="toggleAvailability()">
+          {{ hasMe() ? '✓ Disponible este día' : '+ Marcarme como disponible' }}
+        </button>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Notas del día</div>
+        <div class="modal-notes-list">
+          @if (dayNotes().length === 0) {
+            <div class="modal-hint">Sin notas todavía — sé el primero en agregar una</div>
+          }
+          @for (note of dayNotes(); track note.id) {
+            <div class="modal-note-item">
+              <div class="modal-note-head">
+                <span class="modal-note-author" [style.color]="personColor(note.person_name)">{{ note.person_name }}</span>
+                <span class="modal-note-time">{{ formatNoteTime(note.created_at) }}</span>
+                @if (canDeleteNote(note.person_name)) {
+                  <button class="modal-note-del" (click)="deleteNote(note.id)">×</button>
+                }
+              </div>
+              <div class="modal-note-text">{{ note.note }}</div>
+            </div>
+          }
+        </div>
+        <div class="modal-note-form">
+          <textarea
+            [value]="noteText()"
+            (input)="noteText.set($any($event.target).value)"
+            placeholder="Escribe una nota para este día…"
+            (keydown.meta.enter)="addNote()"
+          ></textarea>
+          <button class="modal-note-submit" [disabled]="saving()" (click)="addNote()">
+            {{ saving() ? 'Guardando…' : 'Agregar nota →' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

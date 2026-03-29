@@ -1,0 +1,83 @@
+<div class="page-header">
+  <div class="page-eyebrow">Lugares y planes</div>
+  <div class="page-title">¿A dónde quieren ir?</div>
+  <div class="page-desc">Agrega restaurantes, atracciones, actividades y todo lo que quieran hacer en el viaje.</div>
+</div>
+<div class="page-body">
+  <div class="add-panel">
+    <div class="panel-title">Agregar lugar o plan</div>
+    <div class="field-row">
+      <input
+        class="field"
+        type="text"
+        [value]="placeName()"
+        (input)="placeName.set($any($event.target).value)"
+        placeholder="Nombre del lugar o actividad…"
+        (keydown.enter)="addPlace()"
+      />
+      <select
+        class="field cat-select"
+        [value]="placeCategory()"
+        (change)="placeCategory.set($any($event.target).value)"
+      >
+        <option value="attraction">🏛️ Atracción</option>
+        <option value="restaurant">🍽️ Restaurante</option>
+        <option value="beach">🌊 Playa / Naturaleza</option>
+        <option value="activity">🎭 Actividad</option>
+        <option value="shopping">🛍️ Shopping</option>
+        <option value="other">📍 Otro</option>
+      </select>
+    </div>
+    <div class="field-row">
+      <textarea
+        class="field"
+        [value]="placeDesc()"
+        (input)="placeDesc.set($any($event.target).value)"
+        placeholder="Descripción, dirección, notas… (opcional)"
+      ></textarea>
+    </div>
+    <button class="btn-primary" [disabled]="adding()" (click)="addPlace()">
+      @if (adding()) {
+        <span class="spinner"></span> Guardando…
+      } @else {
+        + Agregar
+      }
+    </button>
+  </div>
+
+  <div class="filter-bar">
+    <button class="chip" [class.active]="filter() === 'all'" (click)="filter.set('all')">Todos</button>
+    @for (key of PLACE_CAT_KEYS; track key) {
+      <button class="chip" [class.active]="filter() === key" (click)="filter.set(key)">
+        {{ PLACE_CATS[key].icon }} {{ PLACE_CATS[key].label }}
+      </button>
+    }
+  </div>
+
+  <div class="places-grid">
+    @if (filteredPlaces().length === 0) {
+      <div class="empty-state">
+        {{ supabase.places().length === 0 ? 'Agrega el primer lugar que quieren visitar 📍' : 'Ningún lugar en esta categoría todavía' }}
+      </div>
+    }
+    @for (place of filteredPlaces(); track place.id) {
+      <div class="place-card">
+        <div class="card-top">
+          <span
+            class="cat-badge"
+            [style.color]="getCat(place.category).color"
+            [style.background]="getCat(place.category).bg"
+          >
+            {{ getCat(place.category).icon }} {{ getCat(place.category).label }}
+          </span>
+          <button class="btn-del" (click)="deletePlace(place.id)">×</button>
+        </div>
+        <div class="place-name">{{ place.name }}</div>
+        @if (place.description) {
+          <div class="place-desc">{{ place.description }}</div>
+        }
+        <div class="place-meta">por <span>{{ place.added_by }}</span> · {{ formatDate(place.created_at) }}</div>
+      </div>
+    }
+  </div>
+</div>

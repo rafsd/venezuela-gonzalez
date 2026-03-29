@@ -1,0 +1,52 @@
+<div class="page-header">
+  <div class="page-eyebrow">Calendario de disponibilidad</div>
+  <div class="page-title">¿Cuándo pueden viajar?</div>
+  <div class="page-desc">Haz clic en cualquier día para marcar disponibilidad y agregar notas.</div>
+</div>
+<div class="page-body">
+  <div class="cal-nav">
+    <button class="cal-nav-btn" (click)="changeMonth(-1)">← Anterior</button>
+    <div class="cal-month-label">{{ monthLabel() }}</div>
+    <button class="cal-nav-btn" (click)="changeMonth(1)">Siguiente →</button>
+  </div>
+  <div class="cal-grid">
+    @for (dow of DOWS; track dow) {
+      <div class="cal-dow">{{ dow }}</div>
+    }
+    @for (cell of calendarDays(); track $index) {
+      @if (cell.type === 'empty') {
+        <div class="cal-cell empty"></div>
+      } @else {
+        <div class="cal-cell"
+             [class.is-today]="cell.isToday"
+             [class.has-me]="cell.hasMe"
+             [class.is-past]="cell.isPast"
+             (click)="openModal(cell.dateStr!)">
+          <div class="cal-num">{{ cell.dayNum }}</div>
+          <div class="cal-avs">
+            @for (av of cell.avatars!; track av.name) {
+              <div class="cal-av" [style.background]="av.color" [title]="av.name">{{ av.initials }}</div>
+            }
+          </div>
+          @if (cell.noteCount! > 0) {
+            <div class="cal-note-pill">✏ {{ cell.noteCount }}</div>
+          }
+        </div>
+      }
+    }
+  </div>
+  @if (legend().length > 0) {
+    <div class="cal-legend">
+      @for (entry of legend(); track entry.name) {
+        <div class="legend-row">
+          <div class="legend-swatch" [style.background]="entry.color"></div>
+          <span>{{ entry.name }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+@if (selectedDate()) {
+  <app-day-modal [selectedDate]="selectedDate()!" (close)="closeModal()" />
+}

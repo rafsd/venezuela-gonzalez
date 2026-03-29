@@ -1,0 +1,42 @@
+<aside class="sidebar">
+  <div class="sb-brand">
+    <span class="sb-icon">✈️</span>
+    <div>
+      <div class="sb-title">Venezuela González</div>
+      <div class="sb-sub">Planificador · 2025</div>
+    </div>
+  </div>
+
+  <div class="sb-user">
+    <div class="sb-avatar">{{ initials }}</div>
+    <div class="sb-user-info">
+      <div class="sb-user-name">{{ auth.profile()?.display_name }}</div>
+      <div class="sb-user-role">{{ auth.isAdmin() ? 'Administrador' : 'Miembro' }}</div>
+    </div>
+    <button class="btn-logout" (click)="auth.signOut()" title="Cerrar sesión">↩</button>
+  </div>
+
+  <nav class="sb-nav">
+    <a class="nav-link" routerLink="/schedule" routerLinkActive="active">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label">Disponibilidad</span>
+    </a>
+    <a class="nav-link" routerLink="/places" routerLinkActive="active">
+      <span class="nav-icon">📍</span>
+      <span class="nav-label">Lugares</span>
+    </a>
+    @if (auth.isAdmin()) {
+      <a class="nav-link" routerLink="/admin" routerLinkActive="active">
+        <span class="nav-icon">🛡️</span>
+        <span class="nav-label">Administrar</span>
+      </a>
+    }
+  </nav>
+
+  <div class="sb-footer">
+    <div class="live-pill">
+      <span class="live-dot"></span>
+      <span>Actualización en vivo</span>
+    </div>
+  </div>
+</aside>
