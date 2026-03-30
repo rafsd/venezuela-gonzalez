@@ -5,85 +5,94 @@
 </div>
 <div class="page-body">
 
-  <!-- ── Add panel ─────────────────────────────────────────────────────────── -->
+  <!-- ── Add panel ──────────────────────────────────────────────────────────── -->
   <div class="add-panel">
     <div class="panel-title">Agregar lugar o plan</div>
-    <div class="field-row">
-      <input
-        class="field"
-        type="text"
-        [value]="placeName()"
-        (input)="placeName.set($any($event.target).value)"
-        placeholder="Nombre del lugar o actividad…"
-        (keydown.enter)="addPlace()"
-      />
-      <select
-        class="field cat-select"
-        [value]="placeCategory()"
-        (change)="placeCategory.set($any($event.target).value)"
-      >
-        <option value="attraction">Atracción</option>
-        <option value="restaurant">Restaurante</option>
-        <option value="beach">Playa / Naturaleza</option>
-        <option value="activity">Actividad</option>
-        <option value="shopping">Shopping</option>
-        <option value="other">Otro</option>
-      </select>
-    </div>
-    <div class="field-row">
-      <textarea
-        class="field"
-        [value]="placeDesc()"
-        (input)="placeDesc.set($any($event.target).value)"
-        placeholder="Descripción, dirección, notas… (opcional)"
-      ></textarea>
-    </div>
+    <div class="panel-body">
 
-    @if (membersExcludingSelf().length > 0) {
-      <div class="visibility-section">
-        <div class="visibility-label">¿Quién puede ver esto?</div>
-        <div class="visibility-toggle">
-          <button
-            class="vis-btn"
-            [class.active]="visibilityMode() === 'all'"
-            (click)="setVisibilityMode('all')"
-            type="button"
-          >Todos</button>
-          <button
-            class="vis-btn"
-            [class.active]="visibilityMode() === 'specific'"
-            (click)="setVisibilityMode('specific')"
-            type="button"
-          >Seleccionar</button>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Lugar o actividad</label>
+          <input
+            class="field"
+            type="text"
+            [value]="placeName()"
+            (input)="placeName.set($any($event.target).value)"
+            placeholder="Nombre del lugar…"
+            (keydown.enter)="addPlace()"
+          />
         </div>
-        @if (visibilityMode() === 'specific') {
-          <div class="share-chips">
-            @for (m of membersExcludingSelf(); track m.id) {
-              <button
-                class="share-chip"
-                [class.selected]="isShared(m.display_name)"
-                (click)="toggleSharedWith(m.display_name)"
-                type="button"
-              >
-                <span class="chip-avatar">{{ initials(m.display_name) }}</span>
-                {{ m.display_name }}
-              </button>
-            }
-          </div>
-        }
+        <div class="field-group">
+          <label class="field-label">Categoría</label>
+          <select
+            class="field cat-select"
+            [value]="placeCategory()"
+            (change)="placeCategory.set($any($event.target).value)"
+          >
+            <option value="attraction">Atracción</option>
+            <option value="restaurant">Restaurante</option>
+            <option value="beach">Playa / Naturaleza</option>
+            <option value="activity">Actividad</option>
+            <option value="shopping">Shopping</option>
+            <option value="other">Otro</option>
+          </select>
+        </div>
       </div>
-    }
 
-    <button class="btn-primary" [disabled]="adding()" (click)="addPlace()">
-      @if (adding()) {
-        <span class="spinner"></span> Guardando…
-      } @else {
-        + Agregar
+      <div class="field-group">
+        <label class="field-label">Descripción (opcional)</label>
+        <textarea
+          class="field"
+          [value]="placeDesc()"
+          (input)="placeDesc.set($any($event.target).value)"
+          placeholder="Dirección, notas, referencias…"
+        ></textarea>
+      </div>
+
+      @if (membersExcludingSelf().length > 0) {
+        <div class="visibility-section">
+          <div class="visibility-label">¿Quién puede ver esto?</div>
+          <div class="visibility-toggle">
+            <button
+              class="vis-btn"
+              [class.active]="visibilityMode() === 'all'"
+              (click)="setVisibilityMode('all')"
+              type="button"
+            >Todos</button>
+            <button
+              class="vis-btn"
+              [class.active]="visibilityMode() === 'specific'"
+              (click)="setVisibilityMode('specific')"
+              type="button"
+            >Seleccionar</button>
+          </div>
+          @if (visibilityMode() === 'specific') {
+            <div class="share-chips">
+              @for (m of membersExcludingSelf(); track m.id) {
+                <button
+                  class="share-chip"
+                  [class.selected]="isShared(m.display_name)"
+                  (click)="toggleSharedWith(m.display_name)"
+                  type="button"
+                >
+                  <span class="chip-avatar">{{ initials(m.display_name) }}</span>
+                  {{ m.display_name }}
+                </button>
+              }
+            </div>
+          }
+        </div>
       }
-    </button>
+
+    </div>
+    <div class="panel-footer">
+      <button class="btn-save" [disabled]="adding()" (click)="addPlace()">
+        @if (adding()) { <span class="spinner"></span> Guardando… } @else { Agregar }
+      </button>
+    </div>
   </div>
 
-  <!-- ── Filter bar ─────────────────────────────────────────────────────────── -->
+  <!-- ── Filter bar ──────────────────────────────────────────────────────────── -->
   <div class="filter-bar">
     <button class="chip" [class.active]="filter() === 'all'" (click)="filter.set('all')">Todos</button>
     @for (key of PLACE_CAT_KEYS; track key) {
@@ -104,113 +113,113 @@
     @for (place of filteredPlaces(); track place.id) {
       @if (editingId() === place.id) {
 
-        <!-- ── Edit card ───────────────────────────────────────────────────── -->
-        <div class="place-card editing">
-          <div class="edit-field-row">
-            <input
-              class="edit-field"
-              type="text"
-              [value]="editName()"
-              (input)="editName.set($any($event.target).value)"
-              placeholder="Nombre…"
-            />
-            <select
-              class="edit-field cat-select"
-              [value]="editCategory()"
-              (change)="editCategory.set($any($event.target).value)"
-            >
-              <option value="attraction">Atracción</option>
-              <option value="restaurant">Restaurante</option>
-              <option value="beach">Playa / Naturaleza</option>
-              <option value="activity">Actividad</option>
-              <option value="shopping">Shopping</option>
-              <option value="other">Otro</option>
-            </select>
-          </div>
-          <textarea
-            class="edit-field edit-textarea"
-            [value]="editDesc()"
-            (input)="editDesc.set($any($event.target).value)"
-            placeholder="Descripción, notas… (opcional)"
-          ></textarea>
-
-          @if (membersExcludingSelf().length > 0) {
-            <div class="visibility-section compact">
-              <div class="visibility-label">¿Quién puede ver esto?</div>
-              <div class="visibility-toggle">
-                <button
-                  class="vis-btn"
-                  [class.active]="editVisibilityMode() === 'all'"
-                  (click)="setEditVisibilityMode('all')"
-                  type="button"
-                >Todos</button>
-                <button
-                  class="vis-btn"
-                  [class.active]="editVisibilityMode() === 'specific'"
-                  (click)="setEditVisibilityMode('specific')"
-                  type="button"
-                >Seleccionar</button>
-              </div>
-              @if (editVisibilityMode() === 'specific') {
-                <div class="share-chips">
-                  @for (m of membersExcludingSelf(); track m.id) {
-                    <button
-                      class="share-chip"
-                      [class.selected]="isEditShared(m.display_name)"
-                      (click)="toggleEditSharedWith(m.display_name)"
-                      type="button"
-                    >
-                      <span class="chip-avatar">{{ initials(m.display_name) }}</span>
-                      {{ m.display_name }}
-                    </button>
-                  }
-                </div>
-              }
+        <!-- ── Edit card ─────────────────────────────────────────────────── -->
+        <div class="place-card editing" [style.borderLeftColor]="getCat(place.category).color">
+          <div class="card-inner">
+            <div class="edit-field-row">
+              <input
+                class="edit-field"
+                type="text"
+                [value]="editName()"
+                (input)="editName.set($any($event.target).value)"
+                placeholder="Nombre…"
+              />
+              <select
+                class="edit-field cat-select"
+                [value]="editCategory()"
+                (change)="editCategory.set($any($event.target).value)"
+              >
+                <option value="attraction">Atracción</option>
+                <option value="restaurant">Restaurante</option>
+                <option value="beach">Playa / Naturaleza</option>
+                <option value="activity">Actividad</option>
+                <option value="shopping">Shopping</option>
+                <option value="other">Otro</option>
+              </select>
             </div>
-          }
+            <textarea
+              class="edit-field edit-textarea"
+              [value]="editDesc()"
+              (input)="editDesc.set($any($event.target).value)"
+              placeholder="Descripción, notas… (opcional)"
+            ></textarea>
 
-          <div class="edit-actions">
-            <button class="btn-save" [disabled]="saving()" (click)="saveEdit(place.id)">
-              @if (saving()) { Guardando… } @else { Guardar }
-            </button>
-            <button class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
+            @if (membersExcludingSelf().length > 0) {
+              <div class="visibility-section compact">
+                <div class="visibility-label">¿Quién puede ver esto?</div>
+                <div class="visibility-toggle">
+                  <button
+                    class="vis-btn"
+                    [class.active]="editVisibilityMode() === 'all'"
+                    (click)="setEditVisibilityMode('all')"
+                    type="button"
+                  >Todos</button>
+                  <button
+                    class="vis-btn"
+                    [class.active]="editVisibilityMode() === 'specific'"
+                    (click)="setEditVisibilityMode('specific')"
+                    type="button"
+                  >Seleccionar</button>
+                </div>
+                @if (editVisibilityMode() === 'specific') {
+                  <div class="share-chips">
+                    @for (m of membersExcludingSelf(); track m.id) {
+                      <button
+                        class="share-chip"
+                        [class.selected]="isEditShared(m.display_name)"
+                        (click)="toggleEditSharedWith(m.display_name)"
+                        type="button"
+                      >
+                        <span class="chip-avatar">{{ initials(m.display_name) }}</span>
+                        {{ m.display_name }}
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+          <div class="card-footer">
+            <div class="edit-actions">
+              <button class="btn-save" [disabled]="saving()" (click)="saveEdit(place.id)">
+                @if (saving()) { Guardando… } @else { Guardar }
+              </button>
+              <button class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
+            </div>
           </div>
         </div>
 
       } @else {
 
-        <!-- ── View card ───────────────────────────────────────────────────── -->
-        <div class="place-card">
-          <div class="card-top">
-            <span
-              class="cat-badge"
-              [style.color]="getCat(place.category).color"
-              [style.background]="getCat(place.category).bg"
-            >
-              {{ getCat(place.category).label }}
-            </span>
-            <div class="card-actions">
-              @if (place.added_by === currentUser()) {
-                <button class="btn-edit" (click)="startEdit(place)" title="Editar">editar</button>
-              }
-              <button class="btn-del" (click)="deletePlace(place.id)">×</button>
+        <!-- ── View card ─────────────────────────────────────────────────── -->
+        <div class="place-card" [style.borderLeftColor]="getCat(place.category).color">
+          <div class="card-inner">
+            <div class="card-top">
+              <span
+                class="cat-badge"
+                [style.color]="getCat(place.category).color"
+              >{{ getCat(place.category).label }}</span>
+              <div class="card-actions">
+                @if (place.added_by === currentUser()) {
+                  <button class="btn-edit" (click)="startEdit(place)">Editar</button>
+                }
+                <button class="btn-del" (click)="deletePlace(place.id)">Eliminar</button>
+              </div>
             </div>
+            <div class="place-name">{{ place.name }}</div>
+            @if (place.description) {
+              <div class="place-desc">{{ place.description }}</div>
+            }
           </div>
-
-          <div class="place-name">{{ place.name }}</div>
-
-          @if (place.description) {
-            <div class="place-desc">{{ place.description }}</div>
-          }
-
-          <div class="place-meta">por <span>{{ place.added_by }}</span> · {{ formatDate(place.created_at) }}</div>
-
-          @if (place.shared_with.length > 0) {
-            <div class="visibility-badge">
-              <span class="vis-lock">solo</span>
-              <span class="vis-names">{{ place.shared_with.join(', ') }}</span>
-            </div>
-          }
+          <div class="card-footer">
+            <div class="place-meta">por <span>{{ place.added_by }}</span> · {{ formatDate(place.created_at) }}</div>
+            @if (place.shared_with.length > 0) {
+              <div class="visibility-badge">
+                <span class="vis-lock">solo</span>
+                <span class="vis-names">{{ place.shared_with.join(', ') }}</span>
+              </div>
+            }
+          </div>
         </div>
 
       }

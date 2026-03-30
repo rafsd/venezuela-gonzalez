@@ -66,6 +66,7 @@ export class SupabaseService {
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'calendar_notes' }, ({ eventType, new: n, old: o }: any) => {
         if (eventType === 'INSERT') this._calendarNotes.update(l => l.find(c => c.id === n.id) ? l : [...l, n]);
+        if (eventType === 'UPDATE') this._calendarNotes.update(l => l.map(c => c.id === n.id ? n : c));
         if (eventType === 'DELETE') this._calendarNotes.update(l => l.filter(c => c.id !== o.id));
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'places' }, ({ eventType, new: n, old: o }: any) => {
@@ -100,6 +101,17 @@ export class SupabaseService {
       .single();
     if (!error && data) this._calendarNotes.update(l => l.find(n => n.id === data.id) ? l : [...l, data]);
     return { data, error };
+  }
+
+  async updateCalendarNote(id: string, note: string) {
+    const { data, error } = await this.client
+      .from('calendar_notes')
+      .update({ note })
+      .eq('id', id)
+      .select()
+      .single();
+    if (!error && data) this._calendarNotes.update(l => l.map(n => n.id === id ? data as CalendarNote : n));
+    return { error };
   }
 
   async deleteCalendarNote(id: string) {

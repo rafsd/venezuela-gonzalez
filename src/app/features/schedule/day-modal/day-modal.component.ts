@@ -24,6 +24,10 @@ export class DayModalComponent {
 
   readonly noteText = signal('');
   readonly saving = signal(false);
+  readonly editingNoteId = signal<string | null>(null);
+  readonly editNoteText = signal('');
+  readonly savingEdit = signal(false);
+  readonly confirmDeleteId = signal<string | null>(null);
 
   readonly dateLabel = computed(() => {
     const dateStr = this.selectedDate();
@@ -91,20 +95,57 @@ export class DayModalComponent {
     }
   }
 
-  async deleteNote(id: string) {
+  startEditNote(id: string, currentText: string) {
+    this.editingNoteId.set(id);
+    this.editNoteText.set(currentText);
+  }
+
+  cancelEditNote() {
+    this.editingNoteId.set(null);
+    this.editNoteText.set('');
+  }
+
+  async saveEditNote(id: string) {
+    const text = this.editNoteText().trim();
+    if (!text) return;
+    this.savingEdit.set(true);
+    const { error } = await this.supabase.updateCalendarNote(id, text);
+    this.savingEdit.set(false);
+    if (error) {
+      this.toast.show('Error al guardar la nota');
+    } else {
+      this.editingNoteId.set(null);
+      this.editNoteText.set('');
+    }
+  }
+
+  requestDeleteNote(id: string) {
+    this.confirmDeleteId.set(id);
+  }
+
+  cancelDeleteNote() {
+    this.confirmDeleteId.set(null);
+  }
+
+  async confirmDelete(id: string) {
+    if (this.editingNoteId() === id) this.cancelEditNote();
+    this.confirmDeleteId.set(null);
     const { error } = await this.supabase.deleteCalendarNote(id);
     if (error) this.toast.show('Error al eliminar la nota');
     else this.toast.show('Nota eliminada');
   }
 
-  canDeleteNote(personName: string): boolean {
+  canManageNote(personName: string): boolean {
     const userName = this.userService.userName().trim();
     return !!userName && userName === personName;
   }
 
   formatNoteTime(dt: string): string {
     const date = new Date(dt);
-    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleString('es-ES', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
   }
 
   personColor = personColor;

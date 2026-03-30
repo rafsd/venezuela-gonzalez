@@ -1,12 +1,16 @@
 <div class="modal-overlay" (click)="$event.target === $event.currentTarget && close.emit()">
   <div class="modal-box">
+
     <div class="modal-header">
       <div class="modal-date">{{ dateLabel() }}</div>
-      <button class="modal-close-btn" (click)="close.emit()">×</button>
+      <button class="modal-close-btn" (click)="close.emit()" aria-label="Cerrar">×</button>
     </div>
+
     <div class="modal-body">
+
+      <!-- ── Availability ──────────────────────────────────────────────────── -->
       <div class="modal-section">
-        <div class="modal-section-title">Disponibilidad</div>
+        <div class="modal-section-label">Disponibilidad</div>
         <div class="modal-avail-people">
           @for (a of dayAvailability(); track a.id) {
             <span class="modal-av-chip" [style.background]="personColor(a.person_name)">
@@ -15,43 +19,104 @@
             </span>
           }
           @if (dayAvailability().length === 0) {
-            <div class="modal-hint">Nadie marcado como disponible todavía</div>
+            <span class="modal-hint">Nadie marcado como disponible todavía</span>
           }
         </div>
         <button class="modal-avail-btn" [class.is-me]="hasMe()" (click)="toggleAvailability()">
-          {{ hasMe() ? '✓ Disponible este día' : '+ Marcarme como disponible' }}
+          @if (hasMe()) { ✓ Disponible este día } @else { + Marcarme como disponible }
         </button>
       </div>
+
+      <!-- ── Notes ─────────────────────────────────────────────────────────── -->
       <div class="modal-section">
-        <div class="modal-section-title">Notas del día</div>
+        <div class="modal-section-label">Notas del día</div>
+
         <div class="modal-notes-list">
           @if (dayNotes().length === 0) {
-            <div class="modal-hint">Sin notas todavía — sé el primero en agregar una</div>
+            <div class="modal-hint">Sin notas todavía.</div>
           }
+
           @for (note of dayNotes(); track note.id) {
-            <div class="modal-note-item">
+            <div class="modal-note-item"
+                 [class.is-editing]="editingNoteId() === note.id"
+                 [class.is-confirming]="confirmDeleteId() === note.id">
+
+              <!-- ── Note header ─────────────────────────── -->
               <div class="modal-note-head">
-                <span class="modal-note-author" [style.color]="personColor(note.person_name)">{{ note.person_name }}</span>
+                <span class="modal-note-author" [style.color]="personColor(note.person_name)">
+                  {{ note.person_name }}
+                </span>
                 <span class="modal-note-time">{{ formatNoteTime(note.created_at) }}</span>
-                @if (canDeleteNote(note.person_name)) {
-                  <button class="modal-note-del" (click)="deleteNote(note.id)">×</button>
+                @if (canManageNote(note.person_name) && editingNoteId() !== note.id && confirmDeleteId() !== note.id) {
+                  <div class="modal-note-actions">
+                    <button class="btn-action-edit" (click)="startEditNote(note.id, note.note)">
+                      Editar
+                    </button>
+                    <button class="btn-action-delete" (click)="requestDeleteNote(note.id)">
+                      Eliminar
+                    </button>
+                  </div>
                 }
               </div>
-              <div class="modal-note-text">{{ note.note }}</div>
+
+              <!-- ── Note text (view mode) ───────────────── -->
+              @if (editingNoteId() !== note.id && confirmDeleteId() !== note.id) {
+                <div class="modal-note-text">{{ note.note }}</div>
+              }
+
+              <!-- ── Inline edit form ───────────────────── -->
+              @if (editingNoteId() === note.id) {
+                <div class="modal-note-edit-form">
+                  <textarea
+                    class="modal-field"
+                    [value]="editNoteText()"
+                    (input)="editNoteText.set($any($event.target).value)"
+                    (keydown.escape)="cancelEditNote()"
+                    (keydown.meta.enter)="saveEditNote(note.id)"
+                    rows="3"
+                  ></textarea>
+                  <div class="modal-form-actions">
+                    <button class="btn-primary-sharp" [disabled]="savingEdit()" (click)="saveEditNote(note.id)">
+                      {{ savingEdit() ? 'Guardando…' : 'Guardar cambios' }}
+                    </button>
+                    <button class="btn-ghost-sharp" (click)="cancelEditNote()">Cancelar</button>
+                  </div>
+                </div>
+              }
+
+              <!-- ── Delete confirmation ────────────────── -->
+              @if (confirmDeleteId() === note.id) {
+                <div class="modal-confirm-delete">
+                  <span class="modal-confirm-text">¿Eliminar esta nota? Esta acción no se puede deshacer.</span>
+                  <div class="modal-confirm-actions">
+                    <button class="btn-danger-sharp" (click)="confirmDelete(note.id)">Eliminar</button>
+                    <button class="btn-ghost-sharp" (click)="cancelDeleteNote()">Cancelar</button>
+                  </div>
+                </div>
+              }
+
             </div>
           }
         </div>
-        <div class="modal-note-form">
+
+        <!-- ── Add note form ──────────────────────────────────────────────── -->
+        <div class="modal-add-form">
+          <div class="modal-add-label">Nueva nota</div>
           <textarea
+            class="modal-field"
             [value]="noteText()"
             (input)="noteText.set($any($event.target).value)"
             placeholder="Escribe una nota para este día…"
             (keydown.meta.enter)="addNote()"
+            rows="3"
           ></textarea>
-          <button class="modal-note-submit" [disabled]="saving()" (click)="addNote()">
-            {{ saving() ? 'Guardando…' : 'Agregar nota →' }}
-          </button>
+          <div class="modal-form-actions">
+            <button class="btn-primary-sharp" [disabled]="saving() || !noteText().trim()" (click)="addNote()">
+              {{ saving() ? 'Guardando…' : 'Agregar nota' }}
+            </button>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
