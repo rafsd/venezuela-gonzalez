@@ -17,34 +17,44 @@ export class PlacesComponent implements OnInit {
   private toast = inject(ToastService);
 
   // ── Form state ──────────────────────────────────────────────────────────────
-  readonly placeName = signal('');
-  readonly placeDesc = signal('');
+  readonly placeName     = signal('');
+  readonly placeDesc     = signal('');
   readonly placeCategory = signal('attraction');
-  readonly sharedWith = signal<string[]>([]);
-  readonly filter = signal('all');
-  readonly adding = signal(false);
+  readonly visibilityMode = signal<'all' | 'specific'>('all');
+  readonly sharedWith    = signal<string[]>([]);
+  readonly filter        = signal('all');
+  readonly adding        = signal(false);
 
-  // ── Members list (for the shared-with picker) ────────────────────────────────
+  // ── Members list ─────────────────────────────────────────────────────────────
   readonly members = signal<Profile[]>([]);
 
   // ── Edit state ───────────────────────────────────────────────────────────────
-  readonly editingId = signal<string | null>(null);
-  readonly editName = signal('');
-  readonly editDesc = signal('');
-  readonly editCategory = signal('');
-  readonly editSharedWith = signal<string[]>([]);
-  readonly saving = signal(false);
+  readonly editingId          = signal<string | null>(null);
+  readonly editName           = signal('');
+  readonly editDesc           = signal('');
+  readonly editCategory       = signal('');
+  readonly editVisibilityMode = signal<'all' | 'specific'>('all');
+  readonly editSharedWith     = signal<string[]>([]);
+  readonly saving             = signal(false);
 
-  readonly PLACE_CATS = PLACE_CATS;
+  readonly PLACE_CATS     = PLACE_CATS;
   readonly PLACE_CAT_KEYS = Object.keys(PLACE_CATS);
 
   readonly currentUser = computed(() => this.auth.profile()?.display_name ?? '');
 
   readonly filteredPlaces = computed(() => {
-    const f = this.filter();
-    const places = this.supabase.places();
-    if (f === 'all') return places;
-    return places.filter(p => p.category === f);
+    const f    = this.filter();
+    const me   = this.currentUser();
+    const all  = this.supabase.places();
+
+    // Visibility: show if shared_with is empty (public) OR I'm the creator OR I'm in the list
+    const visible = all.filter(p => {
+      const sw = p.shared_with ?? [];
+      return sw.length === 0 || p.added_by === me || sw.includes(me);
+    });
+
+    if (f === 'all') return visible;
+    return visible.filter(p => p.category === f);
   });
 
   async ngOnInit() {
@@ -56,17 +66,6 @@ export class PlacesComponent implements OnInit {
     return PLACE_CATS[key] ?? PLACE_CATS['other'];
   }
 
-  // ── Shared-with picker helpers ───────────────────────────────────────────────
-  toggleSharedWith(name: string) {
-    this.sharedWith.update(list =>
-      list.includes(name) ? list.filter(n => n !== name) : [...list, name]
-    );
-  }
-
-  isShared(name: string) {
-    return this.sharedWith().includes(name);
-  }
-
   membersExcludingSelf() {
     return this.members().filter(m => m.display_name !== this.currentUser());
   }
@@ -75,22 +74,39 @@ export class PlacesComponent implements OnInit {
     return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
   }
 
+  // ── Add form visibility ───────────────────────────────────────────────────────
+  setVisibilityMode(mode: 'all' | 'specific') {
+    this.visibilityMode.set(mode);
+    if (mode === 'all') this.sharedWith.set([]);
+  }
+
+  toggleSharedWith(name: string) {
+    this.sharedWith.update(l => l.includes(name) ? l.filter(n => n !== name) : [...l, name]);
+  }
+
+  isShared(name: string) { return this.sharedWith().includes(name); }
+
   // ── Add ──────────────────────────────────────────────────────────────────────
   async addPlace() {
     const name = this.placeName().trim();
     if (!name) return;
     const userName = this.currentUser();
     if (!userName) { this.toast.show('Por favor inicia sesión primero'); return; }
+
+    const visibility = this.visibilityMode() === 'specific' ? this.sharedWith() : [];
+
     this.adding.set(true);
     const desc = this.placeDesc().trim() || null;
-    const { error } = await this.supabase.addPlace(name, desc, this.placeCategory(), userName, this.sharedWith());
+    const { error } = await this.supabase.addPlace(name, desc, this.placeCategory(), userName, visibility);
     this.adding.set(false);
+
     if (error) {
       this.toast.show('Error al guardar: ' + error.message);
     } else {
       this.placeName.set('');
       this.placeDesc.set('');
       this.placeCategory.set('attraction');
+      this.visibilityMode.set('all');
       this.sharedWith.set([]);
       this.toast.show('¡Lugar agregado!');
     }
@@ -98,36 +114,38 @@ export class PlacesComponent implements OnInit {
 
   // ── Edit ─────────────────────────────────────────────────────────────────────
   startEdit(place: any) {
+    const sw = place.shared_with ?? [];
     this.editingId.set(place.id);
     this.editName.set(place.name);
     this.editDesc.set(place.description ?? '');
     this.editCategory.set(place.category);
-    this.editSharedWith.set([...(place.shared_with ?? [])]);
+    this.editVisibilityMode.set(sw.length > 0 ? 'specific' : 'all');
+    this.editSharedWith.set([...sw]);
   }
 
-  cancelEdit() {
-    this.editingId.set(null);
+  cancelEdit() { this.editingId.set(null); }
+
+  setEditVisibilityMode(mode: 'all' | 'specific') {
+    this.editVisibilityMode.set(mode);
+    if (mode === 'all') this.editSharedWith.set([]);
   }
 
   toggleEditSharedWith(name: string) {
-    this.editSharedWith.update(list =>
-      list.includes(name) ? list.filter(n => n !== name) : [...list, name]
-    );
+    this.editSharedWith.update(l => l.includes(name) ? l.filter(n => n !== name) : [...l, name]);
   }
 
-  isEditShared(name: string) {
-    return this.editSharedWith().includes(name);
-  }
+  isEditShared(name: string) { return this.editSharedWith().includes(name); }
 
   async saveEdit(id: string) {
     const name = this.editName().trim();
     if (!name) return;
+    const visibility = this.editVisibilityMode() === 'specific' ? this.editSharedWith() : [];
     this.saving.set(true);
     const { error } = await this.supabase.updatePlace(id, {
       name,
       description: this.editDesc().trim() || null,
       category: this.editCategory(),
-      shared_with: this.editSharedWith()
+      shared_with: visibility
     });
     this.saving.set(false);
     if (error) {

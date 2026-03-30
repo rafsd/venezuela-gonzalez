@@ -8,7 +8,7 @@
   border-radius: 10px;
   padding: 5px;
   width: fit-content;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(37, 32, 24, 0.05);
 }
 
 .cal-nav-btn {
@@ -18,7 +18,7 @@
   padding: 6px 14px;
   border-radius: 7px;
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-body);
   font-size: 13px;
   transition: background 0.15s, color 0.15s;
 
@@ -29,8 +29,10 @@
 }
 
 .cal-month-label {
-  font-family: 'Playfair Display', serif;
-  font-size: 17px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 400;
   color: var(--text);
   min-width: 190px;
   text-align: center;
@@ -49,6 +51,7 @@
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--muted);
+  font-family: var(--font-body);
   padding: 6px 0 8px;
 }
 
@@ -63,11 +66,11 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 2px rgba(37, 32, 24, 0.04);
 
   &:hover {
     border-color: var(--border2);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.09);
+    box-shadow: 0 3px 10px rgba(37, 32, 24, 0.08);
     transform: translateY(-1px);
   }
 
@@ -80,16 +83,16 @@
 
   &.is-today {
     border-color: var(--accent-border);
-    background: rgba(44, 95, 138, 0.04);
+    background: var(--accent-dim);
   }
 
   &.has-me {
-    background: rgba(44, 95, 138, 0.07);
+    background: rgba(122, 156, 126, 0.07);
     border-color: var(--accent-border);
   }
 
   &.is-past {
-    opacity: 0.5;
+    opacity: 0.45;
   }
 }
 
@@ -97,6 +100,7 @@
   font-size: 12px;
   font-weight: 500;
   color: var(--muted2);
+  font-family: var(--font-body);
 
   .is-today & {
     color: var(--accent);
@@ -121,6 +125,7 @@
   border-radius: 50%;
   font-size: 8px;
   font-weight: 700;
+  font-family: var(--font-body);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,6 +143,7 @@
   background: var(--accent-dim);
   border-radius: 4px;
   padding: 1px 5px;
+  font-family: var(--font-body);
 }
 
 .cal-legend {
@@ -158,6 +164,7 @@
   gap: 7px;
   font-size: 12px;
   color: var(--muted2);
+  font-family: var(--font-body);
 }
 
 .legend-swatch {
@@ -180,6 +187,6 @@
 
   .cal-month-label {
     min-width: 140px;
-    font-size: 14px;
+    font-size: 15px;
   }
 }

@@ -22,12 +22,12 @@
         [value]="placeCategory()"
         (change)="placeCategory.set($any($event.target).value)"
       >
-        <option value="attraction">🏛️ Atracción</option>
-        <option value="restaurant">🍽️ Restaurante</option>
-        <option value="beach">🌊 Playa / Naturaleza</option>
-        <option value="activity">🎭 Actividad</option>
-        <option value="shopping">🛍️ Shopping</option>
-        <option value="other">📍 Otro</option>
+        <option value="attraction">Atracción</option>
+        <option value="restaurant">Restaurante</option>
+        <option value="beach">Playa / Naturaleza</option>
+        <option value="activity">Actividad</option>
+        <option value="shopping">Shopping</option>
+        <option value="other">Otro</option>
       </select>
     </div>
     <div class="field-row">
@@ -40,21 +40,37 @@
     </div>
 
     @if (membersExcludingSelf().length > 0) {
-      <div class="share-section">
-        <div class="share-label">Compartir con</div>
-        <div class="share-chips">
-          @for (m of membersExcludingSelf(); track m.id) {
-            <button
-              class="share-chip"
-              [class.selected]="isShared(m.display_name)"
-              (click)="toggleSharedWith(m.display_name)"
-              type="button"
-            >
-              <span class="chip-avatar">{{ initials(m.display_name) }}</span>
-              {{ m.display_name }}
-            </button>
-          }
+      <div class="visibility-section">
+        <div class="visibility-label">¿Quién puede ver esto?</div>
+        <div class="visibility-toggle">
+          <button
+            class="vis-btn"
+            [class.active]="visibilityMode() === 'all'"
+            (click)="setVisibilityMode('all')"
+            type="button"
+          >Todos</button>
+          <button
+            class="vis-btn"
+            [class.active]="visibilityMode() === 'specific'"
+            (click)="setVisibilityMode('specific')"
+            type="button"
+          >Seleccionar</button>
         </div>
+        @if (visibilityMode() === 'specific') {
+          <div class="share-chips">
+            @for (m of membersExcludingSelf(); track m.id) {
+              <button
+                class="share-chip"
+                [class.selected]="isShared(m.display_name)"
+                (click)="toggleSharedWith(m.display_name)"
+                type="button"
+              >
+                <span class="chip-avatar">{{ initials(m.display_name) }}</span>
+                {{ m.display_name }}
+              </button>
+            }
+          </div>
+        }
       </div>
     }
 
@@ -72,7 +88,7 @@
     <button class="chip" [class.active]="filter() === 'all'" (click)="filter.set('all')">Todos</button>
     @for (key of PLACE_CAT_KEYS; track key) {
       <button class="chip" [class.active]="filter() === key" (click)="filter.set(key)">
-        {{ PLACE_CATS[key].icon }} {{ PLACE_CATS[key].label }}
+        {{ PLACE_CATS[key].label }}
       </button>
     }
   </div>
@@ -81,13 +97,14 @@
   <div class="places-grid">
     @if (filteredPlaces().length === 0) {
       <div class="empty-state">
-        {{ supabase.places().length === 0 ? 'Agrega el primer lugar que quieren visitar 📍' : 'Ningún lugar en esta categoría todavía' }}
+        {{ supabase.places().length === 0 ? 'Agrega el primer lugar que quieren visitar.' : 'Ningún lugar en esta categoría todavía.' }}
       </div>
     }
 
     @for (place of filteredPlaces(); track place.id) {
       @if (editingId() === place.id) {
-        <!-- ── Edit card ─────────────────────────────────────────────────────── -->
+
+        <!-- ── Edit card ───────────────────────────────────────────────────── -->
         <div class="place-card editing">
           <div class="edit-field-row">
             <input
@@ -102,12 +119,12 @@
               [value]="editCategory()"
               (change)="editCategory.set($any($event.target).value)"
             >
-              <option value="attraction">🏛️ Atracción</option>
-              <option value="restaurant">🍽️ Restaurante</option>
-              <option value="beach">🌊 Playa / Naturaleza</option>
-              <option value="activity">🎭 Actividad</option>
-              <option value="shopping">🛍️ Shopping</option>
-              <option value="other">📍 Otro</option>
+              <option value="attraction">Atracción</option>
+              <option value="restaurant">Restaurante</option>
+              <option value="beach">Playa / Naturaleza</option>
+              <option value="activity">Actividad</option>
+              <option value="shopping">Shopping</option>
+              <option value="other">Otro</option>
             </select>
           </div>
           <textarea
@@ -118,21 +135,37 @@
           ></textarea>
 
           @if (membersExcludingSelf().length > 0) {
-            <div class="share-section compact">
-              <div class="share-label">Compartir con</div>
-              <div class="share-chips">
-                @for (m of membersExcludingSelf(); track m.id) {
-                  <button
-                    class="share-chip"
-                    [class.selected]="isEditShared(m.display_name)"
-                    (click)="toggleEditSharedWith(m.display_name)"
-                    type="button"
-                  >
-                    <span class="chip-avatar">{{ initials(m.display_name) }}</span>
-                    {{ m.display_name }}
-                  </button>
-                }
+            <div class="visibility-section compact">
+              <div class="visibility-label">¿Quién puede ver esto?</div>
+              <div class="visibility-toggle">
+                <button
+                  class="vis-btn"
+                  [class.active]="editVisibilityMode() === 'all'"
+                  (click)="setEditVisibilityMode('all')"
+                  type="button"
+                >Todos</button>
+                <button
+                  class="vis-btn"
+                  [class.active]="editVisibilityMode() === 'specific'"
+                  (click)="setEditVisibilityMode('specific')"
+                  type="button"
+                >Seleccionar</button>
               </div>
+              @if (editVisibilityMode() === 'specific') {
+                <div class="share-chips">
+                  @for (m of membersExcludingSelf(); track m.id) {
+                    <button
+                      class="share-chip"
+                      [class.selected]="isEditShared(m.display_name)"
+                      (click)="toggleEditSharedWith(m.display_name)"
+                      type="button"
+                    >
+                      <span class="chip-avatar">{{ initials(m.display_name) }}</span>
+                      {{ m.display_name }}
+                    </button>
+                  }
+                </div>
+              }
             </div>
           }
 
@@ -143,8 +176,10 @@
             <button class="btn-cancel" (click)="cancelEdit()">Cancelar</button>
           </div>
         </div>
+
       } @else {
-        <!-- ── View card ─────────────────────────────────────────────────────── -->
+
+        <!-- ── View card ───────────────────────────────────────────────────── -->
         <div class="place-card">
           <div class="card-top">
             <span
@@ -152,11 +187,11 @@
               [style.color]="getCat(place.category).color"
               [style.background]="getCat(place.category).bg"
             >
-              {{ getCat(place.category).icon }} {{ getCat(place.category).label }}
+              {{ getCat(place.category).label }}
             </span>
             <div class="card-actions">
               @if (place.added_by === currentUser()) {
-                <button class="btn-edit" (click)="startEdit(place)" title="Editar">✏️</button>
+                <button class="btn-edit" (click)="startEdit(place)" title="Editar">editar</button>
               }
               <button class="btn-del" (click)="deletePlace(place.id)">×</button>
             </div>
@@ -168,17 +203,16 @@
             <div class="place-desc">{{ place.description }}</div>
           }
 
-          @if ((place.shared_with ?? []).length > 0) {
-            <div class="shared-with">
-              <span class="shared-label">Con</span>
-              @for (name of place.shared_with; track name) {
-                <span class="shared-avatar" [title]="name">{{ initials(name) }}</span>
-              }
+          <div class="place-meta">por <span>{{ place.added_by }}</span> · {{ formatDate(place.created_at) }}</div>
+
+          @if (place.shared_with.length > 0) {
+            <div class="visibility-badge">
+              <span class="vis-lock">solo</span>
+              <span class="vis-names">{{ place.shared_with.join(', ') }}</span>
             </div>
           }
-
-          <div class="place-meta">por <span>{{ place.added_by }}</span> · {{ formatDate(place.created_at) }}</div>
         </div>
+
       }
     }
   </div>

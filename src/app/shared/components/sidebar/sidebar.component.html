@@ -1,9 +1,9 @@
 <aside class="sidebar">
   <div class="sb-brand">
-    <span class="sb-icon">✈️</span>
+    <div class="sb-brand-icon">✈</div>
     <div>
       <div class="sb-title">Venezuela González</div>
-      <div class="sb-sub">Planificador · 2025</div>
+      <div class="sb-sub">Planificador · 2026</div>
     </div>
   </div>
 
@@ -13,22 +13,25 @@
       <div class="sb-user-name">{{ auth.profile()?.display_name }}</div>
       <div class="sb-user-role">{{ auth.isAdmin() ? 'Administrador' : 'Miembro' }}</div>
     </div>
-    <button class="btn-logout" (click)="auth.signOut()" title="Cerrar sesión">↩</button>
+    <button class="btn-logout" (click)="auth.signOut()" title="Cerrar sesión">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </button>
   </div>
 
   <nav class="sb-nav">
     <a class="nav-link" routerLink="/schedule" routerLinkActive="active">
-      <span class="nav-icon">📅</span>
-      <span class="nav-label">Disponibilidad</span>
+      Disponibilidad
     </a>
     <a class="nav-link" routerLink="/places" routerLinkActive="active">
-      <span class="nav-icon">📍</span>
-      <span class="nav-label">Lugares</span>
+      Lugares
     </a>
     @if (auth.isAdmin()) {
       <a class="nav-link" routerLink="/admin" routerLinkActive="active">
-        <span class="nav-icon">🛡️</span>
-        <span class="nav-label">Administrar</span>
+        Administrar
       </a>
     }
   </nav>
@@ -36,7 +39,7 @@
   <div class="sb-footer">
     <div class="live-pill">
       <span class="live-dot"></span>
-      <span>Actualización en vivo</span>
+      <span>En vivo</span>
     </div>
   </div>
 </aside>

@@ -10,13 +10,13 @@ export const DAY_NAMES: string[] = [
 export const DOWS: string[] = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 
 export const PERSON_PALETTE: string[] = [
-  '#2C5F8A',
-  '#2E8B9A',
-  '#B05478',
-  '#2E7A5B',
-  '#7050A8',
-  '#8A6B2C',
-  '#2E6A8A'
+  '#7A9C7E',
+  '#8A9EB8',
+  '#B87878',
+  '#9E8A72',
+  '#7A8E9E',
+  '#9E9A72',
+  '#7E8A9E'
 ];
 
 export interface PlaceCat {
@@ -30,37 +30,37 @@ export const PLACE_CATS: Record<string, PlaceCat> = {
   attraction: {
     label: 'Atracción',
     icon: '🏛️',
-    color: '#1E6FA8',
-    bg: 'rgba(30,111,168,0.09)'
+    color: '#5A7EA0',
+    bg: 'rgba(90,126,160,0.08)'
   },
   restaurant: {
     label: 'Restaurante',
     icon: '🍽️',
-    color: '#A85C28',
-    bg: 'rgba(168,92,40,0.09)'
+    color: '#A87850',
+    bg: 'rgba(168,120,80,0.08)'
   },
   beach: {
-    label: 'Playa / Naturaleza',
+    label: 'Playa',
     icon: '🌊',
-    color: '#1A7A58',
-    bg: 'rgba(26,122,88,0.09)'
+    color: '#5A9E82',
+    bg: 'rgba(90,158,130,0.08)'
   },
   activity: {
     label: 'Actividad',
     icon: '🎭',
-    color: '#8A3060',
-    bg: 'rgba(138,48,96,0.09)'
+    color: '#9E6878',
+    bg: 'rgba(158,104,120,0.08)'
   },
   shopping: {
     label: 'Shopping',
     icon: '🛍️',
-    color: '#6B5220',
-    bg: 'rgba(107,82,32,0.09)'
+    color: '#8A7A50',
+    bg: 'rgba(138,122,80,0.08)'
   },
   other: {
     label: 'Otro',
     icon: '📍',
-    color: '#4E4A44',
-    bg: 'rgba(78,74,68,0.08)'
+    color: '#7A7570',
+    bg: 'rgba(122,117,112,0.08)'
   }
 };

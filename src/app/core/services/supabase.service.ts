@@ -40,7 +40,8 @@ export class SupabaseService {
   constructor() {
     this.client = createClient(
       'https://ydmdshlbttpnhsksmtml.supabase.co',
-      'sb_publishable_p5qTHhy2oR3AOQBqyce6ZA_J7xwI4x0'
+      'sb_publishable_p5qTHhy2oR3AOQBqyce6ZA_J7xwI4x0',
+      { auth: { lock: <R>(_name: string, _timeout: number, fn: () => Promise<R>) => fn() } }
     );
     this.loadAll();
     this.subscribeRealtime();
