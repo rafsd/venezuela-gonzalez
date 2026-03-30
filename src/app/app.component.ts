@@ -4,6 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { ToastComponent } from './shared/components/toast/toast.component';
+import { AuthService } from './core/services/auth.service';
 
 const AUTH_PATHS = ['/login', '/register', '/pending', '/forgot-password', '/reset-password'];
 
@@ -16,6 +17,7 @@ const AUTH_PATHS = ['/login', '/register', '/pending', '/forgot-password', '/res
 })
 export class AppComponent {
   private router = inject(Router);
+  readonly auth = inject(AuthService);
 
   readonly isAuthPage = toSignal(
     this.router.events.pipe(

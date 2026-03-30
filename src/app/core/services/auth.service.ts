@@ -19,10 +19,12 @@ export class AuthService {
   private _user = signal<User | null>(null);
   private _profile = signal<Profile | null>(null);
   private _loading = signal(true);
+  private _impersonatedProfile = signal<Profile | null>(null);
 
   readonly user = this._user.asReadonly();
   readonly profile = this._profile.asReadonly();
   readonly loading = this._loading.asReadonly();
+  readonly impersonatedProfile = this._impersonatedProfile.asReadonly();
   readonly isAdmin = computed(() => this._profile()?.role === 'admin');
   readonly isApproved = computed(() => {
     const role = this._profile()?.role;
@@ -104,5 +106,21 @@ export class AuthService {
       .update({ role: 'rejected' })
       .eq('id', userId);
     return { error };
+  }
+
+  async setRole(userId: string, role: 'admin' | 'member') {
+    const { error } = await this.supabase.client
+      .from('profiles')
+      .update({ role })
+      .eq('id', userId);
+    return { error };
+  }
+
+  startImpersonating(profile: Profile) {
+    this._impersonatedProfile.set(profile);
+  }
+
+  stopImpersonating() {
+    this._impersonatedProfile.set(null);
   }
 }

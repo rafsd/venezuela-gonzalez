@@ -1,7 +1,16 @@
 @if (!isAuthPage()) {
   <app-sidebar />
 }
-<main [class.main]="!isAuthPage()" [class.auth-main]="isAuthPage()">
-  <router-outlet />
-</main>
+<div [class.main-wrap]="!isAuthPage()" [class.auth-wrap]="isAuthPage()">
+  @if (!isAuthPage() && auth.impersonatedProfile()) {
+    <div class="impersonation-banner">
+      <span class="impersonation-label">Modo impersonación</span>
+      <span class="impersonation-user">Viendo como <strong>{{ auth.impersonatedProfile()!.display_name }}</strong></span>
+      <button class="impersonation-stop" (click)="auth.stopImpersonating()">Volver a mi cuenta</button>
+    </div>
+  }
+  <main [class.main]="!isAuthPage()" [class.auth-main]="isAuthPage()">
+    <router-outlet />
+  </main>
+</div>
 <app-toast />

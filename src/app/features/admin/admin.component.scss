@@ -1,166 +1,184 @@
 .loading-msg {
-  color: var(--muted2);
+  color: var(--muted);
   padding: 40px 0;
-  font-size: 14px;
+  font-size: 16px;
   font-style: italic;
   font-family: var(--font-display);
 }
 
+.empty-note {
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15px;
+  padding: 10px 0 28px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+
+// ── Section ───────────────────────────────────────────────────────────────────
 .section {
   margin-bottom: 32px;
-  max-width: 640px;
+  max-width: 720px;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--text);
+  margin-bottom: 0;
 }
 
 .section-title {
-  font-size: 10.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--muted);
   font-family: var(--font-body);
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  font-weight: 500;
 }
 
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+.section-count {
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  padding: 1px 7px;
+  letter-spacing: 0.05em;
 }
 
-.badge-pending {
-  background: rgba(168, 120, 80, 0.12);
-  color: #A87850;
+// ── Table ─────────────────────────────────────────────────────────────────────
+.profiles-table {
+  border-left: 1px solid var(--border2);
+  border-right: 1px solid var(--border2);
+
+  &.faded {
+    opacity: 0.55;
+  }
 }
 
-.profiles-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
+// ── Row ───────────────────────────────────────────────────────────────────────
 .profile-row {
   display: flex;
   align-items: center;
   gap: 14px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 11px;
-  padding: 14px 16px;
-  transition: box-shadow 0.15s;
+  transition: background 0.12s;
 
   &:hover {
-    box-shadow: 0 2px 10px rgba(37, 32, 24, 0.06);
-  }
-
-  &.faded {
-    opacity: 0.5;
+    background: var(--surface2);
   }
 }
 
+// ── Avatar ────────────────────────────────────────────────────────────────────
 .profile-avatar {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: var(--accent-dim);
-  border: 1px solid var(--accent-border);
-  color: var(--accent);
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  color: var(--muted2);
+  font-family: var(--font-body);
   font-size: 13px;
   font-weight: 700;
-  font-family: var(--font-body);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 
-  &.member {
-    background: rgba(90, 158, 130, 0.12);
-    border-color: rgba(90, 158, 130, 0.3);
-    color: #5A9E82;
+  &.pending {
+    background: rgba(168, 120, 80, 0.1);
+    border-color: rgba(168, 120, 80, 0.3);
+    color: #A87850;
   }
 
-  &.rejected {
-    background: var(--bg);
-    border-color: var(--border);
-    color: var(--muted2);
+  &.member {
+    background: var(--accent-dim);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+
+  &.admin {
+    background: rgba(90, 126, 160, 0.1);
+    border-color: rgba(90, 126, 160, 0.3);
+    color: #5A7EA0;
   }
 }
 
+// ── Info ──────────────────────────────────────────────────────────────────────
 .profile-info {
   flex: 1;
   min-width: 0;
 }
 
 .profile-name {
-  font-size: 14px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
   color: var(--text);
   font-weight: 500;
-  font-family: var(--font-body);
 }
 
 .profile-email {
-  font-size: 12px;
+  font-family: var(--font-body);
+  font-size: 11.5px;
   color: var(--muted2);
   margin-top: 1px;
 }
 
 .profile-date {
-  font-size: 11px;
+  font-family: var(--font-body);
+  font-size: 10.5px;
   color: var(--muted);
   margin-top: 2px;
 }
 
+// ── Actions ───────────────────────────────────────────────────────────────────
 .profile-actions {
   display: flex;
-  gap: 8px;
+  gap: 0;
   flex-shrink: 0;
+  border: 1px solid var(--border2);
 }
 
-.btn-approve {
-  background: rgba(90, 158, 130, 0.1);
-  border: 1px solid rgba(90, 158, 130, 0.28);
-  color: #5A9E82;
-  border-radius: 7px;
-  padding: 6px 14px;
-  font-family: var(--font-body);
-  font-size: 12.5px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s;
-
-  &:hover {
-    background: rgba(90, 158, 130, 0.18);
-  }
-}
-
-.btn-reject {
+.btn-action {
   background: transparent;
-  border: 1px solid var(--border);
-  color: var(--muted2);
-  border-radius: 7px;
-  padding: 6px 14px;
+  border: none;
+  border-right: 1px solid var(--border2);
   font-family: var(--font-body);
-  font-size: 12.5px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.12s;
+  border-radius: 0;
+  line-height: 1.4;
 
-  &:hover {
-    border-color: rgba(184, 120, 120, 0.4);
-    color: var(--rose);
-    background: rgba(184, 120, 120, 0.06);
+  &:last-child { border-right: none; }
+
+  &.approve {
+    color: var(--accent);
+    &:hover { background: var(--accent); color: #fff; }
   }
-}
 
-.empty-state {
-  color: var(--muted2);
-  font-size: 15px;
-  padding: 32px 0;
-  font-style: italic;
-  font-family: var(--font-display);
+  &.reject {
+    color: var(--rose);
+    &:hover { background: var(--rose); color: #fff; }
+  }
+
+  &.impersonate {
+    color: #5A7EA0;
+    &:hover { background: #5A7EA0; color: #fff; }
+  }
+
+  &.promote {
+    color: var(--muted2);
+    &:hover { background: var(--surface3); color: var(--text); }
+  }
 }

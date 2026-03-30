@@ -4,3 +4,62 @@
   width: 100%;
   overflow-x: hidden;
 }
+
+.main-wrap,
+.auth-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Impersonation banner ──────────────────────────────────────────────────────
+.impersonation-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 24px;
+  background: #2C1810;
+  border-bottom: 1px solid #4A2E20;
+  flex-shrink: 0;
+}
+
+.impersonation-label {
+  font-family: var(--font-body);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #D4874A;
+  font-weight: 600;
+}
+
+.impersonation-user {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.75);
+  flex: 1;
+
+  strong {
+    color: #fff;
+    font-weight: 600;
+  }
+}
+
+.impersonation-stop {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  padding: 5px 14px;
+  cursor: pointer;
+  border-radius: 0;
+  letter-spacing: 0.03em;
+  transition: all 0.12s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+}
