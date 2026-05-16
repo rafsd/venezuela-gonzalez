@@ -1,13 +1,20 @@
-<div class="auth-card">
-  <div class="pending-icon">⏳</div>
-  <h2 class="pending-title">Solicitud pendiente</h2>
-  <p class="pending-msg">
-    Hola <strong>{{ auth.profile()?.display_name }}</strong>,<br>
-    tu solicitud está esperando aprobación de
-    <strong>Rafael González</strong>.
-  </p>
-  <p class="pending-hint">
-    Una vez aprobado, podrás acceder al planificador del viaje.
-  </p>
-  <button class="btn-logout" (click)="auth.signOut()">Cerrar sesión</button>
+<div class="auth-layout">
+  <div class="auth-panel-left">
+    <span class="auth-brand-mark">✈</span>
+    <div class="auth-brand-name">Venezuela González</div>
+    <div class="auth-brand-tagline">Planificador de viaje · 2026</div>
+  </div>
+
+  <div class="auth-panel-right">
+    <div class="auth-status-wrap">
+      <div class="auth-status-rule"></div>
+      <div class="auth-status-title">Solicitud pendiente</div>
+      <div class="auth-status-msg">
+        Hola <strong>{{ auth.profile()?.display_name }}</strong>, tu solicitud está
+        esperando aprobación de <strong>Rafael González</strong>.<br><br>
+        Una vez aprobado, podrás acceder al planificador del viaje.
+      </div>
+      <button class="auth-status-btn" (click)="auth.signOut()">Cerrar sesión</button>
+    </div>
+  </div>
 </div>

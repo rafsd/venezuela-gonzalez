@@ -395,3 +395,20 @@
 
   &:hover { background: #a06060; }
 }
+
+// ── Mobile ────────────────────────────────────────────────────────────────────
+@media (max-width: 680px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal-box {
+    max-width: 100%;
+    max-height: 92vh;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: 0 -4px 24px rgba(37, 32, 24, 0.14);
+  }
+}

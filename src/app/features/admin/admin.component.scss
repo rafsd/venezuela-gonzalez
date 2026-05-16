@@ -182,3 +182,25 @@
     &:hover { background: var(--surface3); color: var(--text); }
   }
 }
+
+// ── Mobile ────────────────────────────────────────────────────────────────────
+@media (max-width: 680px) {
+  .section { max-width: 100%; }
+
+  .profile-row {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .profile-actions {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .btn-action {
+    flex: 1;
+    text-align: center;
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+}

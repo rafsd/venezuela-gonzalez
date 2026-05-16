@@ -16,12 +16,23 @@ export class LoginComponent {
   private router = inject(Router);
 
   readonly loading = signal(false);
+  readonly googleLoading = signal(false);
   readonly email = signal('');
   readonly password = signal('');
 
   set(field: 'email' | 'password', value: string) {
     if (field === 'email') this.email.set(value);
     else this.password.set(value);
+  }
+
+  async signInWithGoogle() {
+    this.googleLoading.set(true);
+    const { error } = await this.auth.signInWithGoogle();
+    if (error) {
+      this.googleLoading.set(false);
+      this.toast.show('No se pudo iniciar sesión con Google');
+    }
+    // On success, Supabase redirects the browser — no need to reset loading
   }
 
   async submit() {

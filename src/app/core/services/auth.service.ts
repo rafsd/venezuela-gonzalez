@@ -43,13 +43,18 @@ export class AuthService {
     }
     this._loading.set(false);
 
-    this.supabase.client.auth.onAuthStateChange(async (_event, session) => {
+    this.supabase.client.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
+        this._loading.set(true);
         this._user.set(session.user);
         await this.loadProfile(session.user.id);
+        this._loading.set(false);
       } else {
         this._user.set(null);
         this._profile.set(null);
+        if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+          this.router.navigate(['/login']);
+        }
       }
     });
   }
@@ -65,6 +70,14 @@ export class AuthService {
 
   async signIn(email: string, password: string) {
     const { error } = await this.supabase.client.auth.signInWithPassword({ email, password });
+    return { error };
+  }
+
+  async signInWithGoogle() {
+    const { error } = await this.supabase.client.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin }
+    });
     return { error };
   }
 

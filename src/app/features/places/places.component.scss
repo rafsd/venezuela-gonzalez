@@ -495,3 +495,30 @@ textarea.field {
   border-right: 1px solid var(--border2);
   border-bottom: 1px solid var(--border2);
 }
+
+// ── Mobile ────────────────────────────────────────────────────────────────────
+@media (max-width: 680px) {
+  .add-panel { max-width: 100%; }
+
+  .field-row { flex-direction: column; }
+  .field-group + .field-group { margin-left: 0; margin-top: -1px; }
+
+  .places-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-bar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .share-chips { flex-wrap: wrap; }
+}
+
+// ── Tablet ────────────────────────────────────────────────────────────────────
+@media (max-width: 900px) {
+  .places-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
